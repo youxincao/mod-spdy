@@ -1,4 +1,5 @@
 #summary Explains how to build mod_spdy.
+#labels Featured
 
 = Introduction =
 
