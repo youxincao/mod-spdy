@@ -7,7 +7,7 @@ mod_spdy is built using the gyp build system.
 
 = Prerequisites =
 
-To build Page Speed you will need to install the prerequisite software for your platform. You only need to get the prerequisites for your platform. Don't sync the Chromium source tree or anything like that.
+To build mod_spdy you will need to install the prerequisite software for your platform. You only need to get the prerequisites for your platform. Don't sync the Chromium source tree or anything like that.
 
   * [http://dev.chromium.org/developers/how-tos/build-instructions-windows#TOC-Prerequisite-software Windows]
   * [http://code.google.com/p/chromium/wiki/LinuxBuildInstructionsPrerequisites Linux]
