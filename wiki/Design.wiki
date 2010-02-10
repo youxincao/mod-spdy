@@ -34,14 +34,9 @@ TODO: describe `mod_spdy.cc` execution flow.
 
 ==Data Flow==
 
-TODO: describe current flow (no apache-specific details here)
+mod_spdy uses Chromium's [http://code.google.com/p/mod-spdy/source/browse/trunk/src/net/spdy/spdy_framer.h SpdyFramer] class to encode and decode SPDY frames.
 
-Input:
-  # `InputStreamInterface`
-  # `SpdyFramePump`
-  # `SpdyStreamDistributor`
-  # `SpdyToHttpConverter`
-  # `HttpStreamVisitor`
+On the input side, mod_spdy uses [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_frame_pump.h SpdyFramePump] to feed data into a SpdyFramer one frame at a time. The SpdyFramer publishes decoded frames to a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_stream_distributor.h SpdyStreamDistributor], which shards SPDY frames based on their stream id. Each stream is then converted to HTTP using a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_to_http_converter.h SpdyToHttpConverter]. Finally, the HTTP data is published to an [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/http_stream_visitor_interface.h HttpStreamVisitorInterface].
 
 Output:
   # `HeaderPopulatorInterface`
