@@ -13,7 +13,7 @@ See also:
 
 ==Overview==
 
-mod_spdy is an Apache 2.x filter that provides SPDY support in the Apache HTTPD web server. mod_spdy provides two Apache filters: a connection-level filter on the input side, and a transcode-level filter on the output side. Additional details about the input and output filters are provided in the Details section.
+mod_spdy is an Apache 2.x filter that provides SPDY support in the Apache HTTPD web server. mod_spdy provides two Apache filters: a connection-level filter on the input side, and a transcode-level filter on the output side. The input filter receives SPDY frames and emits HTTP requests, while the output filter receives HTTP responses and emits SPDY frames. Additional details about the input and output filters are provided in the Details section.
 
 ===Apache Filters===
 
