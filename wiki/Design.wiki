@@ -23,15 +23,11 @@ Apache filters receive byte buffers from the previous filter in the filter chain
 
 ===Input Filter===
 
-The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter in the Apache filter chain. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
+The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
 
-The input filter is implemented as a connection-level filter because SPDY session state (e.g. the zlib compression/decompression state) is persistent for the lifetime of the TCP connection.
+Because SPDY session state must be persisted for the lifetime of the TCP connection, the input filter is implemented as a connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector, but we do not currently see a significant benefit to hooking the input filter in at the transcode layer of the filter chain (TODO: double check this with Apache developers).
 
-Alternatively, the mod_spdy input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector, but we do not currently see any benefit to hooking the input filter in at the transcode layer of the filter chain (TODO: double check this with Apache developers).
-
-The mod_spdy input filter converts SPDY frames into an HTTP request stream. The filter receives byte buffers, parses those buffers into SPDY frames, and reconstructs an HTTP request stream based on those SPDY frames. This stream can then be processed by the HTTP-aware input filters in the Apache filter chain.
-
-For instance, upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
+Upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
   # extract the header block from the frame
   # emit a request status line based on the `method`, `version`, and `url` headers in the header block
   # emit an HTTP `Host` header based on the SPDY `url` header
@@ -40,9 +36,9 @@ For instance, upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter
 
 On receipt of a DATA frame, the input filter will emit the data in the frame (the request body) to the next filter.
 
-During the transformation from SPDY to HTTP, SPDY metadata about the request, such as the stream id, is lost. The stream id is required by the output filter in order to package the corresponding HTTP response into SPDY frames, so this data must be communicated to the output filter somehow.
+During the transformation from SPDY to HTTP, SPDY metadata about the request, such as the stream id, is lost. The stream id is required by the output filter in order to package the corresponding HTTP response into SPDY frames, so this data must be communicated to the output filter.
 
-Ideally the input filter would annotate the Apache `request_rec` structure (perhaps using the notes field) with this information so it was available to the output filter. However, because the mod_spdy input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the filter is invoked. Thus, in order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP. The output filter is able to read this information from the `request_rec.headers_in` structure.
+Ideally the input filter would annotate the Apache `request_rec` structure with the stream id so it was available to the output filter. However, because the mod_spdy input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the filter is invoked (this is one reason to convert the input filter to a transcode filter). Thus, in order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP. The output filter is able to read this information from the `request_rec.headers_in` structure.
 
 ===Output Filter===
 
