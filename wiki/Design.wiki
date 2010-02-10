@@ -32,37 +32,41 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 mod_spdy uses Chromium's [http://code.google.com/p/mod-spdy/source/browse/trunk/src/net/spdy/spdy_framer.h SpdyFramer] class to encode and decode SPDY frames.
 
-On the input side, mod_spdy uses [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_frame_pump.h SpdyFramePump] to feed data into a `SpdyFramer` one frame at a time. The `SpdyFramer` publishes decoded frames to a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_stream_distributor.h SpdyStreamDistributor], which shards SPDY frames based on their stream id. Each stream is then converted to HTTP using a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_to_http_converter.h SpdyToHttpConverter]. Finally, the HTTP data is published to an [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/http_stream_visitor_interface.h HttpStreamVisitorInterface].
+On the input side, mod_spdy uses [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_frame_pump.h SpdyFramePump] to push data into a `SpdyFramer` one frame at a time. The `SpdyFramer` publishes decoded frames to a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_stream_distributor.h SpdyStreamDistributor], which shards SPDY frames based on their stream id. Each stream is then converted to HTTP using a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_to_http_converter.h SpdyToHttpConverter]. Finally, the HTTP data is published to an [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/http_stream_visitor_interface.h HttpStreamVisitorInterface].
 
-Output:
-  # `HeaderPopulatorInterface`
-  # `OutputFilterContext`
-  # `OutputStreamInterface`
+*SpdyToHttpConverter*
 
-==Filter Registration==
-
-TODO: describe `mod_spdy.cc` execution flow.
-
-==Input Filter==
-
-The mod_spdy input filter is a connection-level filter in the Apache filter chain which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
-
-Because SPDY session state is persistent for the lifetime of the SPDY session/TCP connection, the input filter is implemented as a connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector (TODO: explore the tradeoffs of these two approaches with Apache developers).
-
-Upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
+Upon receipt of a SYN_STREAM frame, the `SpdyToHttpConverter` will: 
   # extract the header block from the frame
   # emit a request status line based on the `method`, `version`, and `url` headers in the header block
   # emit an HTTP `Host` header based on the SPDY `url` header
   # emit all other headers in the header block as HTTP request headers (key-value pairs separated by a colon with a trailing CRLF)
   # emit a trailing CRLF
 
-On receipt of a DATA frame, the input filter will emit the data in the frame (the request body) to the next filter.
+On receipt of a DATA frame, the `SpdyToHttpConverter` will emit the data in the frame (the request body) to the next filter.
+
+*Tracking SPDY metadata*
 
 SPDY stream metadata, such as the stream id, is lost during the transformation from SPDY to HTTP. The stream id is needed by the output filter in order to package the HTTP responses into SPDY frames, so this data must be communicated to the output filter.
 
-Ideally the input filter would annotate the Apache `request_rec` structure with the stream id so it was available to the output filter. However, because the mod_spdy input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the filter is invoked (this is one reason to convert the input filter to a transcode filter). Thus, in order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP. The output filter is able to read this information from the `request_rec.headers_in` structure.
+In order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP.
 
-==Output Filter==
+TODO: Write section on output data flow:
+  # `HeaderPopulatorInterface`
+  # `OutputFilterContext`
+  # `OutputStreamInterface`
+
+==Apache Filter Registration==
+
+TODO: describe `mod_spdy.cc` execution flow.
+
+==Apache Input Filter==
+
+Because SPDY session state is persistent for the lifetime of the SPDY session/TCP connection, the input filter is implemented as an Apache connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector (TODO: explore the tradeoffs of these two approaches with Apache developers).
+
+When tracking SPDY metadata (described above), we would like to annotate the Apache `request_rec` structure with the stream id so it was available to the output filter. This is less hacking than injecting a new header into the HTTP request stream. However, because the mod_spdy input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the filter is invoked. This is one reason to consider converting the input filter to a transcode filter.
+
+==Apache Output Filter==
 
 TODO(mdsteele): write this section
 
