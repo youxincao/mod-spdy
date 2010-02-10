@@ -4,7 +4,7 @@
 
 ==Background==
 
-mod_spdy is an experimental implementation of the SPDY protocol that aims to provide SPDY support in the Apache HTTPD server. mod_spdy is an Apache HTTPD 2.x module, which means it can be included in currently deployed Apache web servers via [http://httpd.apache.org/docs/2.2/mod/mod_so.html mod_so].
+mod_spdy is an experimental implementation of the SPDY protocol that aims to provide SPDY support in the Apache HTTPD server. mod_spdy is an Apache HTTPD 2.x module, which means it can be loaded into currently deployed Apache web servers using [http://httpd.apache.org/docs/2.2/mod/mod_so.html mod_so].
 
 ==SPDY==
 
