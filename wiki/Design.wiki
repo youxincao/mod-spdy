@@ -8,7 +8,7 @@ mod_spdy is an experimental implementation of the SPDY protocol that aims to pro
 
 ==SPDY==
 
-SPDY is an experimental protocol that enables multiplexing, prioritization, and header compression of HTTP traffic. For more information, see the [http://dev.chromium.org/spdy/spdy-whitepaper whitepaper] and [http://dev.chromium.org/spdy/spdy-protocol protocol] documents.
+SPDY is an experimental protocol that enables multiplexing, prioritization, and header compression of HTTP traffic. For more information on SPDY, see the [http://dev.chromium.org/spdy/spdy-whitepaper whitepaper] and [http://dev.chromium.org/spdy/spdy-protocol protocol] documents.
 
 ==Apache==
 
