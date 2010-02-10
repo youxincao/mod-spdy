@@ -28,6 +28,24 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 =Details=
 
+==Data Flow==
+
+TODO: describe current flow
+
+Input:
+  # apache/SpdyInputFilter
+  # apache/InputFilterInputStream
+  # common/SpdyFramePump
+  # common/SpdyFramer
+  # common/SpdyToHttpConverter
+  # apache/HttpStreamAccumulator
+
+Output:
+  # apache/SpdyOutputFilter
+  # apache/ResponseHeaderPopulator
+  # common/OutputFilterContext
+  # apache/BrigadeOutputStream 
+
 ==Input Filter==
 
 The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
