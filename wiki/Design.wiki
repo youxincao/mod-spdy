@@ -64,4 +64,8 @@ Ideally the input filter would annotate the Apache `request_rec` structure with 
 
 ==Output Filter==
 
-For each HTTP response, the mod_spdy output filter receives a structured representation of the HTTP response headers (`request_rec.headers_out`) (TODO: the Apache code appears to merge headers_out and err_headers_out - do we need to do the same?) and uses those headers to populate a spdy::SpdyHeaderBlock. The spdy::SpdyHeaderBlock is used to build a SYN_REPLY frame.
+TODO(mdsteele): write this section
+
+We should describe our interactions with sent_bodyct so Apache devs can read this and get a good understanding on how this works.
+
+For each HTTP response, the mod_spdy output filter receives a structured representation of the HTTP response headers (`request_rec.headers_out`) (TODO: the Apache code appears to merge headers_out and err_headers_out - do we need to do the same?) and uses those headers to populate a `spdy::SpdyHeaderBlock`, which is in turn used to construct a SYN_REPLY frame.
