@@ -1,0 +1,30 @@
+#summary Design Document for mod_spdy Apache module.
+
+=mod_spdy Design Document=
+
+==Background==
+
+SPDY is an experimental protocol that enables multiplexing and prioritization of HTTP requests. mod_spdy is an experimental implementation of the SPDY protocol that provides SPDY support in the Apache HTTPD server.
+
+See also:
+  * [http://dev.chromium.org/spdy/spdy-protocol SPDY protocol]
+  * [http://dev.chromium.org/spdy/spdy-whitepaper SPDY whitepaper]
+  * [http://httpd.apache.org/docs/2.2/developer/filters.html Apache filter overview]
+
+==Overview==
+
+mod_spdy is an Apache 2.x filter that performs conversion from SPDY to HTTP on the input side, and from HTTP to SPDY on the output side. As such, mod_spdy provides two Apache filters: a connection-level filter for the input, and a transcode-level filter for the output. Additional details about the input and output filters are provided in the Details section.
+
+Apache filters receive byte buffers from the previous filter in the filter chain, perform transformations on those buffers, and emit the transformed byte buffers to the next filter in the chain. The mod_spdy input filter 
+
+==Details==
+
+===Input Filter===
+
+The mod_spdy input filter receives byte buffers, attempts to parse those buffers as SPDY frames, and emits the HTTP representation of those 
+
+During the transformation from SPDY to HTTP, SPDY-specific metadata about the request such as the `spdy::SpdyStreamId` is lost. The `spdy::SpdyStreamId` of the request is required by the output filter in order to package the corresponding HTTP response into SPDY frames. Ideally the input filter would annotate the Apache `request_rec` structure (perhaps using the notes field) with this information so it was available to the output filter. However, because the input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the In order to communicate this information from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP. The output filter is then able to read this information from the `request_rec.headers_in` structure.
+
+===Output Filter===
+
+For each HTTP response, the mod_spdy output filter receives a structured representation of the HTTP response headers (`request_rec.headers_out`) (TODO: the Apache code appears to merge headers_out and err_headers_out - do we need to do the same?) and uses those headers to populate a spdy::SpdyHeaderBlock. The spdy::SpdyHeaderBlock is used to build a SYN_REPLY frame.
