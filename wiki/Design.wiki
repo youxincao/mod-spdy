@@ -14,7 +14,7 @@ SPDY is an experimental protocol that enables multiplexing, prioritization, and 
 
 Apache HTTPD is the most commonly used HTTP server on the web, used by roughly 50% of domains and 66% of the top million web sites as of January 2010, according to [http://news.netcraft.com/archives/2010/01/07/january_2010_web_server_survey.html Netcraft].
 
-Apache request/response processing is performed by a chain of filters. Each filter receives byte buffers from the previous filter in the filter chain, performs transformations on those buffers, and emit the transformed byte buffers to the next filter in the chain. The apache filter processing flow is described [http://httpd.apache.org/docs/2.2/filter.html here] and additional implementation details are covered [http://httpd.apache.org/docs/2.2/developer/filters.html here].
+Apache request/response processing is performed by a chain of filters. Each filter receives byte buffers from the previous filter in the filter chain, performs transformations on those buffers, and emits the transformed byte buffers to the next filter in the chain. The apache filter processing flow is described [http://httpd.apache.org/docs/2.2/filter.html here] and additional implementation details are covered [http://httpd.apache.org/docs/2.2/developer/filters.html here].
 
 =Overview=
 
@@ -32,7 +32,7 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
 
-Because SPDY session state must be persisted for the lifetime of the TCP connection, the input filter is implemented as a connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector, but we do not currently see a significant benefit to hooking the input filter in at the transcode layer of the filter chain (TODO: double check this with Apache developers).
+Because SPDY session state is persistent for the lifetime of the SPDY session/TCP connection, the input filter is implemented as a connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector (TODO: explore the tradeoffs of these two approaches with Apache developers).
 
 Upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
   # extract the header block from the frame
@@ -43,7 +43,7 @@ Upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will:
 
 On receipt of a DATA frame, the input filter will emit the data in the frame (the request body) to the next filter.
 
-During the transformation from SPDY to HTTP, SPDY metadata about the request, such as the stream id, is lost. The stream id is required by the output filter in order to package the corresponding HTTP response into SPDY frames, so this data must be communicated to the output filter.
+SPDY stream metadata, such as the stream id, is lost during the transformation from SPDY to HTTP. The stream id is needed by the output filter in order to package the HTTP responses into SPDY frames, so this data must be communicated to the output filter.
 
 Ideally the input filter would annotate the Apache `request_rec` structure with the stream id so it was available to the output filter. However, because the mod_spdy input filter is a connection-level filter, the `request_rec` struct does not yet exist at the time the filter is invoked (this is one reason to convert the input filter to a transcode filter). Thus, in order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP. The output filter is able to read this information from the `request_rec.headers_in` structure.
 
