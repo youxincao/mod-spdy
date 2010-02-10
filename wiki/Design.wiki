@@ -28,10 +28,6 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 =Details=
 
-==Filter Registration==
-
-TODO: describe `mod_spdy.cc` execution flow.
-
 ==Data Flow==
 
 mod_spdy uses Chromium's [http://code.google.com/p/mod-spdy/source/browse/trunk/src/net/spdy/spdy_framer.h SpdyFramer] class to encode and decode SPDY frames.
@@ -42,6 +38,10 @@ Output:
   # `HeaderPopulatorInterface`
   # `OutputFilterContext`
   # `OutputStreamInterface`
+
+==Filter Registration==
+
+TODO: describe `mod_spdy.cc` execution flow.
 
 ==Input Filter==
 
