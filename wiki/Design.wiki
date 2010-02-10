@@ -34,17 +34,6 @@ mod_spdy uses Chromium's [http://code.google.com/p/mod-spdy/source/browse/trunk/
 
 On the input side, mod_spdy uses [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_frame_pump.h SpdyFramePump] to push data into a `SpdyFramer` one frame at a time. The `SpdyFramer` publishes decoded frames to a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_stream_distributor.h SpdyStreamDistributor], which shards SPDY frames based on their stream id. Each stream is then converted to HTTP using a [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/spdy_to_http_converter.h SpdyToHttpConverter]. Finally, the HTTP data is published to an [http://code.google.com/p/mod-spdy/source/browse/trunk/src/mod_spdy/common/http_stream_visitor_interface.h HttpStreamVisitorInterface].
 
-*SpdyToHttpConverter*
-
-Upon receipt of a SYN_STREAM frame, the `SpdyToHttpConverter` will: 
-  # extract the header block from the frame
-  # emit a request status line based on the `method`, `version`, and `url` headers in the header block
-  # emit an HTTP `Host` header based on the SPDY `url` header
-  # emit all other headers in the header block as HTTP request headers (key-value pairs separated by a colon with a trailing CRLF)
-  # emit a trailing CRLF
-
-On receipt of a DATA frame, the `SpdyToHttpConverter` will emit the data in the frame (the request body) to the next filter.
-
 *Tracking SPDY metadata*
 
 SPDY stream metadata, such as the stream id, is lost during the transformation from SPDY to HTTP. The stream id is needed by the output filter in order to package the HTTP responses into SPDY frames, so this data must be communicated to the output filter.
