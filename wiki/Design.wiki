@@ -28,7 +28,7 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 =Details=
 
-==Data Flow==
+==Input Data Flow==
 
 mod_spdy uses Chromium's [http://code.google.com/p/mod-spdy/source/browse/trunk/src/net/spdy/spdy_framer.h SpdyFramer] class to encode and decode SPDY frames.
 
@@ -51,7 +51,9 @@ SPDY stream metadata, such as the stream id, is lost during the transformation f
 
 In order to communicate the stream id from input filter to output filter, an `x-spdy-request-id` header is injected into the HTTP request during the transformation from SPDY to HTTP.
 
-TODO: Write section on output data flow:
+==Output Data Flow==
+
+TODO(mdsteele): Write section on output data flow:
   # `HeaderPopulatorInterface`
   # `OutputFilterContext`
   # `OutputStreamInterface`
