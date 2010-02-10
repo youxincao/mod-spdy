@@ -36,7 +36,6 @@ Input:
   # `apache/SpdyInputFilter`
   # `apache/InputFilterInputStream`
   # `common/SpdyFramePump`
-  # `common/SpdyFramer`
   # `common/SpdyStreamDistributor`
   # `common/SpdyToHttpConverter`
   # `apache/HttpStreamAccumulator`
