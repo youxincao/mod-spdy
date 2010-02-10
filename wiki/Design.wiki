@@ -6,17 +6,13 @@
 
 mod_spdy is an experimental implementation of the SPDY protocol that aims to provide SPDY support in the Apache HTTPD server. mod_spdy is an Apache HTTPD 2.x module, which means it can be loaded into currently deployed Apache web servers using [http://httpd.apache.org/docs/2.2/mod/mod_so.html mod_so].
 
-==SPDY==
+===SPDY===
 
 SPDY is an experimental protocol that enables multiplexing, prioritization, and header compression of HTTP traffic. For more information, see the [http://dev.chromium.org/spdy/spdy-whitepaper whitepaper] and [http://dev.chromium.org/spdy/spdy-protocol protocol] documents.
 
-==Apache==
+===Apache===
 
 Apache HTTPD is the most commonly used HTTP server on the web, used by roughly 50% of domains and 66% of the top million web sites as of January 2010, according to [http://news.netcraft.com/archives/2010/01/07/january_2010_web_server_survey.html Netcraft].
-
-==mod_spdy==
-
-===Filters===
 
 Apache request/response processing is performed by a chain of filters. Each filter receives byte buffers from the previous filter in the filter chain, perform transformations on those buffers, and emit the transformed byte buffers to the next filter in the chain. The apache filter processing flow is described [http://httpd.apache.org/docs/2.2/filter.html here] and additional implementation details are covered [http://httpd.apache.org/docs/2.2/developer/filters.html here].
 
