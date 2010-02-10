@@ -24,7 +24,7 @@ mod_spdy provides two Apache filters: a connection-level filter on the input sid
 
 ===Multiplexing===
 
-Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Apache does not currently support processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol. Enabling concurrent request processing in Apache is outside the scope of this document (TODO: start a separate document that brainstorms ways to enable multiplexing in Apache).
+Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Apache does not currently support processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol. Thus, the initial implementation of mod_spdy will process each SPDY stream (request) in a session (connection) serially. Enabling concurrent request processing in Apache is outside the scope of this document (TODO: start a separate document that brainstorms ways to enable multiplexing in Apache).
 
 ==Details==
 
