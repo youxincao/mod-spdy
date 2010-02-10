@@ -23,9 +23,13 @@ Apache filters receive byte buffers from the previous filter in the filter chain
 
 ===Input Filter===
 
-The mod_spdy input filter is a connection-level filter (like mod_ssl) which runs just after the mod_ssl input filter in the Apache filter chain. This allows Apache to transmit SPDY over SSL when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
+The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter in the Apache filter chain. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
 
-The mod_spdy input filter converts SPDY frames into an HTTP request stream. The filter receives byte buffers, parses those buffers into SPDY frames, and reconstructs an HTTP request stream based on those SPDY frames. This stream can then be processed by the other input filters in the Apache filter chain.
+The input filter is implemented as a connection-level filter because SPDY session state (e.g. the zlib compression/decompression state) is persistent for the lifetime of the TCP connection.
+
+Alternatively, the mod_spdy input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector, but we do not currently see any benefit to hooking the input filter in at the transcode layer of the filter chain (TODO: double check this with Apache developers).
+
+The mod_spdy input filter converts SPDY frames into an HTTP request stream. The filter receives byte buffers, parses those buffers into SPDY frames, and reconstructs an HTTP request stream based on those SPDY frames. This stream can then be processed by the HTTP-aware input filters in the Apache filter chain.
 
 For instance, upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
   # extract the header block from the frame
