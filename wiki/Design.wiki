@@ -52,7 +52,7 @@ TODO: describe `mod_spdy.cc` execution flow.
 
 ==Input Filter==
 
-The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
+The mod_spdy input filter is a connection-level filter in the Apache filter chain which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
 
 Because SPDY session state is persistent for the lifetime of the SPDY session/TCP connection, the input filter is implemented as a connection-level filter. Alternatively, the input filter could be implemented as a higher level filter (e.g. a transcode filter) with the SPDY session state stored in an Apache connection configuration vector (TODO: explore the tradeoffs of these two approaches with Apache developers).
 
