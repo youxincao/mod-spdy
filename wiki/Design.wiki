@@ -46,6 +46,10 @@ Output:
   # `common/OutputFilterContext`
   # `apache/BrigadeOutputStream` 
 
+==Filter Registration==
+
+TODO: describe `mod_spdy.cc` execution flow.
+
 ==Input Filter==
 
 The mod_spdy input filter is a connection-level filter in the Apache filter chain (like mod_ssl) which runs just after the mod_ssl input filter. This allows Apache to transmit SPDY over SSL, when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
