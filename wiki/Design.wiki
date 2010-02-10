@@ -34,21 +34,19 @@ TODO: describe `mod_spdy.cc` execution flow.
 
 ==Data Flow==
 
-TODO: describe current flow
+TODO: describe current flow (no apache-specific details here)
 
 Input:
-  # `apache/SpdyInputFilter`
-  # `apache/InputFilterInputStream`
-  # `common/SpdyFramePump`
-  # `common/SpdyStreamDistributor`
-  # `common/SpdyToHttpConverter`
-  # `apache/HttpStreamAccumulator`
+  # `InputStreamInterface`
+  # `SpdyFramePump`
+  # `SpdyStreamDistributor`
+  # `SpdyToHttpConverter`
+  # `HttpStreamVisitor`
 
 Output:
-  # `apache/SpdyOutputFilter`
-  # `apache/ResponseHeaderPopulator`
-  # `common/OutputFilterContext`
-  # `apache/BrigadeOutputStream`
+  # `HeaderPopulatorInterface`
+  # `OutputFilterContext`
+  # `OutputStreamInterface`
 
 ==Input Filter==
 
