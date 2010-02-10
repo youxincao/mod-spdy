@@ -28,6 +28,10 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 =Details=
 
+==Filter Registration==
+
+TODO: describe `mod_spdy.cc` execution flow.
+
 ==Data Flow==
 
 TODO: describe current flow
@@ -44,11 +48,7 @@ Output:
   # `apache/SpdyOutputFilter`
   # `apache/ResponseHeaderPopulator`
   # `common/OutputFilterContext`
-  # `apache/BrigadeOutputStream` 
-
-==Filter Registration==
-
-TODO: describe `mod_spdy.cc` execution flow.
+  # `apache/BrigadeOutputStream`
 
 ==Input Filter==
 
