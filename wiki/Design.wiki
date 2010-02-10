@@ -4,20 +4,25 @@
 
 ==Background==
 
-SPDY is an experimental protocol that enables multiplexing and prioritization of HTTP requests. mod_spdy is an experimental implementation of the SPDY protocol that provides SPDY support in the Apache HTTPD server.
+mod_spdy is an experimental implementation of the SPDY protocol that aims to provide SPDY support in the Apache HTTPD server. mod_spdy is an Apache HTTPD 2.x module, which means it can be included in currently deployed Apache web servers via [http://httpd.apache.org/docs/2.2/mod/mod_so.html mod_so].
 
-See also:
-  * [http://dev.chromium.org/spdy/spdy-protocol SPDY protocol]
-  * [http://dev.chromium.org/spdy/spdy-whitepaper SPDY whitepaper]
-  * [http://httpd.apache.org/docs/2.2/developer/filters.html Apache filter overview]
+==SPDY==
+
+SPDY is an experimental protocol ([http://dev.chromium.org/spdy/spdy-whitepaper whitepaper], [http://dev.chromium.org/spdy/spdy-protocol protocol]) that enables multiplexing, prioritization, and header compression of HTTP traffic.
+
+==Apache==
+
+Apache HTTPD is the most commonly used HTTP server on the web, used by roughly 50% of domains and 66% of the top million web sites as of January 2010, according to [http://news.netcraft.com/archives/2010/01/07/january_2010_web_server_survey.html Netcraft].
+
+==mod_spdy==
+
+===Filters===
+
+Apache request/response processing is performed by a chain of filters. Each filter receives byte buffers from the previous filter in the filter chain, perform transformations on those buffers, and emit the transformed byte buffers to the next filter in the chain. The apache filter processing flow is described [http://httpd.apache.org/docs/2.2/filter.html here] and additional implementation details are covered [http://httpd.apache.org/docs/2.2/developer/filters.html here].
 
 ==Overview==
 
 mod_spdy is an Apache 2.x filter that provides SPDY support in the Apache HTTPD web server. mod_spdy provides two Apache filters: a connection-level filter on the input side, and a transcode-level filter on the output side. The input filter receives SPDY frames and emits HTTP requests, while the output filter receives HTTP responses and emits SPDY frames. Additional details about the input and output filters are provided in the Details section.
-
-===Apache Filters===
-
-Apache filters receive byte buffers from the previous filter in the filter chain, perform transformations on those buffers, and emit the transformed byte buffers to the next filter in the chain.
 
 ==Details==
 
