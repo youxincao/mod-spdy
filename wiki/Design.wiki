@@ -23,6 +23,8 @@ Apache filters receive byte buffers from the previous filter in the filter chain
 
 ===Input Filter===
 
+The mod_spdy input filter is a connection-level filter, like mod_ssl, which runs just after the mod_ssl input filter in the Apache filter chain. This allows Apache to transmit SPDY over SSL when SSL is enabled. Note that `npn` is not currently supported in the Apache SSL implementation.
+
 The mod_spdy input filter converts SPDY frames into an HTTP request stream. The filter receives byte buffers, parses those buffers into SPDY frames, and reconstructs an HTTP request stream based on those SPDY frames. This stream can then be processed by the other input filters in the Apache filter chain.
 
 For instance, upon receipt of a SPDY SYN_STREAM frame, the mod_spdy input filter will: 
