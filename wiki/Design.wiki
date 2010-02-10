@@ -33,18 +33,18 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 TODO: describe current flow
 
 Input:
-  # apache/SpdyInputFilter
-  # apache/InputFilterInputStream
-  # common/SpdyFramePump
-  # common/SpdyFramer
-  # common/SpdyToHttpConverter
-  # apache/HttpStreamAccumulator
+  # `apache/SpdyInputFilter`
+  # `apache/InputFilterInputStream`
+  # `common/SpdyFramePump`
+  # `common/SpdyFramer`
+  # `common/SpdyToHttpConverter`
+  # `apache/HttpStreamAccumulator`
 
 Output:
-  # apache/SpdyOutputFilter
-  # apache/ResponseHeaderPopulator
-  # common/OutputFilterContext
-  # apache/BrigadeOutputStream 
+  # `apache/SpdyOutputFilter`
+  # `apache/ResponseHeaderPopulator`
+  # `common/OutputFilterContext`
+  # `apache/BrigadeOutputStream` 
 
 ==Input Filter==
 
