@@ -10,7 +10,7 @@ Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementa
 
 Adding support for SPDY multiplexing in Apache is a tricky issue. Apache connection processing is fundamentally single-threaded. A comment in `ap_mpm.h` explains the contract between an MPM and its connections:
 
- At any instant [the MPM] guarantees a 1:1 mapping of threads [to] ap_process_connection invocations.  
+ At any instant (the MPM) guarantees a 1:1 mapping of threads (to) ap_process_connection invocations.  
 
  Note: In the future it will be possible for ap_process_connection to return to the MPM prior to finishing the entire connection; and the MPM will proceed with asynchronous handling for the connection; in the future the MPM may call ap_process_connection again -- but does not guarantee it will occur on the same thread as the first call.
 
