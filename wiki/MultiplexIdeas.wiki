@@ -16,19 +16,6 @@ Adding support for SPDY multiplexing in Apache is a tricky issue. Apache connect
 
 In order to multiplex SPDY in Apache, we would either need to break this contract, or create a separate "connection" for each stream in a session. Both of these approaches are explored in the ideas section, below.
 
-*Async Handling in Apache*
-
-In the Apache 2.2 branch, the [http://httpd.apache.org/docs/2.2/mod/event.html event] MPM does support basic asynchronous handling (in the 2.3 branch, the `simple` MPM supports asynchronous handling as well).
-
-Other developers have extended the `event` MPM to support a more asynchronous processing model, as described in [http://mail-archives.apache.org/mod_mbox/httpd-modules-dev/200903.mbox/<49B4E5A8.4090209@gmail.com> this thread].
-
-In order to take advantage of async handling in these MPMs, however, the generator needs to support async handling, and the filters need to be compatible with async handling. Most filters do appear to be async-compatible, with the exception of `mod_ssl` which is a "clogging" filter.
-
-Most generators do not support async handling, however. We would like to support SPDY multiplexing for all generators so users can just drop in `mod_spdy` and leverage SPDY in their Apache instance, regardless of their configuration. Thus, each SPDY stream needs to be processed in its own thread. Since there are potentially multiple concurrent SPDY streams for a single connection, this does appear to break the threading contract in `ap_mpm.h`. If we treat each SPDY stream within a SPDY session as its own connection, however, it might be possible to enable multiplexing in Apache without breaking this contract.
-
-Below we explore some options to enable SPDY multiplexing in Apache, taking into account the constraints outlined above.
-
-
 =Ideas=
 
 ==Loopback connection for each SPDY stream==
@@ -52,3 +39,15 @@ This is more desirable than the new TCP connection approach described above in t
 ==New MPM==
 
 A more robust approach might be to create a new MPM based on the existing async MPMs that uses an approach similar to the thread pool above, but at the MPM level. The downside to this approach is that the resulting module would only be pluggable in Apache 2.3.x. Prior to 2.3.x, MPMs are not pluggable.
+
+=Other Notes=
+
+*Async Handling in Apache*
+
+In the Apache 2.2 branch, the [http://httpd.apache.org/docs/2.2/mod/event.html event] MPM does support basic asynchronous handling (in the 2.3 branch, the `simple` MPM supports asynchronous handling as well).
+
+Other developers have extended the `event` MPM to support a more asynchronous processing model, as described in [http://mail-archives.apache.org/mod_mbox/httpd-modules-dev/200903.mbox/<49B4E5A8.4090209@gmail.com> this thread].
+
+In order to take advantage of async handling in these MPMs, however, the generator needs to support async handling, and the filters need to be compatible with async handling. Most filters do appear to be async-compatible, with the exception of `mod_ssl` which is a "clogging" filter.
+
+Most generators do not support async handling, however. We would like to support SPDY multiplexing for all generators so users can just drop in `mod_spdy` and leverage SPDY in their Apache instance, regardless of their configuration. Thus, each SPDY stream needs to be processed in its own thread. Since there are potentially multiple concurrent SPDY streams for a single connection, this does appear to break the threading contract in `ap_mpm.h`. If we treat each SPDY stream within a SPDY session as its own connection, however, it might be possible to enable multiplexing in Apache without breaking this contract.
