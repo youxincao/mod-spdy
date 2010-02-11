@@ -6,4 +6,4 @@
 
 For background on mod_spdy, see [Design mod_spdy design].
 
-Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Current releases of Apache do not support concurrent processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol. Thus, the initial implementation of mod_spdy processes each SPDY stream (request) in a session (connection) serially.
+Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Current releases of Apache do not support concurrent processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol.
