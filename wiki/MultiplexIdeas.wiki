@@ -4,9 +4,9 @@
 
 =Background=
 
-For background on mod_spdy, see [Design mod_spdy design].
+For background on `mod_spdy`, see [Design mod_spdy design].
 
-Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Current releases of Apache do not support concurrent processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol.
+Due to the multiplexed nature of [http://dev.chromium.org/spdy/spdy-protocol the SPDY protocol], an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Current releases of Apache do not support concurrent processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol.
 
 Adding support for SPDY multiplexing in Apache is a tricky issue. Apache connection processing is fundamentally single-threaded. A comment in `ap_mpm.h` explains the contract between an MPM and its connections:
 
@@ -35,6 +35,8 @@ Alternatively, we could have a pool of threads, where each active SPDY stream is
 In this approach, we would use something akin to the SPDY distributor described above. Instead of routing each SPDY stream over its own TCP connection, we would instead create a new `conn_rec` instance, using `ap_run_create_connection` and `ap_run_pre_connection`. We would make some modifications to the resulting `conn_rec` struct, namely replacing the input socket bucket with a bucket that read from a thread-safe queue, and replacing the output filter which wrote to a different thread-safe queue instead of the socket. We would then invoke `ap_run_process_connection` on the `conn_rec` in a new thread, and push frames for the SPDY stream into the thread-safe queue.
 
 This is more desirable than the new TCP connection approach described above in that it stays in-process, but also considerably more fragile, since it makes assumptions about what the core does in the `ap_run_create_connection` and `ap_run_pre_connection` hooks.
+
+(Question: APR has functions for creating and manipulating thread pools in [http://apr.apache.org/docs/apr/trunk/apr__thread__pool_8h.html apr_thread_pool.h]; could a filter/handler/hook create a thread pool and put tasks on it, or would that break everything (depending on the MPM)?)
 
 ==New MPM==
 
