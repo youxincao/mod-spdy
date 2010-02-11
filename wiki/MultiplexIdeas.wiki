@@ -2,8 +2,53 @@
 
 =Multiplexing SPDY in Apache=
 
-= Background =
+=Background=
 
 For background on mod_spdy, see [Design mod_spdy design].
 
 Due to the multiplexed nature of the SPDY protocol, an efficient SPDY implementation should support concurrent processing of requests within a single SPDY session (that is, on a single TCP connection). Current releases of Apache do not support concurrent processing of more than one request on a connection, due to the mostly serialized nature of request/response flow in the existing HTTP protocol.
+
+Adding support for SPDY multiplexing in Apache is a tricky issue. Apache connection processing is fundamentally single-threaded. A comment in `ap_mpm.h` explains the contract between an MPM and its connections:
+
+ At any instant [the MPM] guarantees a 1:1 mapping of threads [to] ap_process_connection invocations.  
+
+ Note: In the future it will be possible for ap_process_connection to return to the MPM prior to finishing the entire connection; and the MPM will proceed with asynchronous handling for the connection; in the future the MPM may call ap_process_connection again -- but does not guarantee it will occur on the same thread as the first call.
+
+In order to multiplex SPDY in Apache, we would either need to break this contract, or create a separate "connection" for each stream in a session. Both of these approaches are explored in the ideas section, below.
+
+*Async Handling in Apache*
+
+In the Apache 2.2 branch, the [http://httpd.apache.org/docs/2.2/mod/event.html event] MPM does support basic asynchronous handling (in the 2.3 branch, the `simple` MPM supports asynchronous handling as well).
+
+Other developers have extended the `event` MPM to support a more asynchronous processing model, as described in [http://mail-archives.apache.org/mod_mbox/httpd-modules-dev/200903.mbox/<49B4E5A8.4090209@gmail.com> this thread].
+
+In order to take advantage of async handling in these MPMs, however, the generator needs to support async handling, and the filters need to be compatible with async handling. Most filters do appear to be async-compatible, with the exception of `mod_ssl` which is a "clogging" filter.
+
+Most generators do not support async handling, however. We would like to support SPDY multiplexing for all generators so users can just drop in `mod_spdy` and leverage SPDY in their Apache instance, regardless of their configuration. Thus, each SPDY stream needs to be processed in its own thread. Since there are potentially multiple concurrent SPDY streams for a single connection, this does appear to break the threading contract in `ap_mpm.h`. If we treat each SPDY stream within a SPDY session as its own connection, however, it might be possible to enable multiplexing in Apache without breaking this contract.
+
+Below we explore some options to enable SPDY multiplexing in Apache, taking into account the constraints outlined above.
+
+
+=Ideas=
+
+==Loopback connection for each SPDY stream==
+
+Apache supports processing of a single request per connection. Thus, a simple (though hacky) way to enable multiplexing in Apache is to create a new TCP connection back to the Apache server for each new SPDY stream.
+
+This is undesirable in that the Apache server is communicating with itself through the OS over TCP. There might be cases where this could fail, such as if a firewall configuration prevents the Apache server from connecting to itself (or from making outbound connections). In addition, this technique has some other undesirable side-effects, such as the fact that these new incoming connections will have a request IP of the local server instead of the client.
+
+One way to support the loopback approach is to use the `create_connection` (or `process_connection`?) hook to intercept new connections. If the new connection is a SPDY connection with an origin IP different from the Apache server, a SPDY dispatcher would accept the connection. The SPDY dispatcher would parse incoming SPDY frames. For each new SPDY stream, the dispatcher would open a TCP connection to the Apache server and push all SPDY frames associated with that stream onto the new connection. Likewise, the dispatcher would pull SPDY frames from that connection and multiplex them onto its own connection back to the client.
+
+Though this could be made to work, it is preferable to keep the new connection creation entirely inside of the Apache process. We explore ideas that stay entirely in-process below.
+
+==Faking conn_rec structs==
+
+Alternatively, we could have a pool of threads, where each active SPDY stream is processed in its own thread.
+
+In this approach, we would use something akin to the SPDY distributor described above. Instead of routing each SPDY stream over its own TCP connection, we would instead create a new `conn_rec` instance, using `ap_run_create_connection` and `ap_run_pre_connection`. We would make some modifications to the resulting `conn_rec` struct, namely replacing the input socket bucket with a bucket that read from a thread-safe queue, and replacing the output filter which wrote to a different thread-safe queue instead of the socket. We would then invoke `ap_run_process_connection` on the `conn_rec` in a new thread, and push frames for the SPDY stream into the thread-safe queue.
+
+This is more desirable than the new TCP connection approach described above in that it stays in-process, but also considerably more fragile, since it makes assumptions about what the core does in the `ap_run_create_connection` and `ap_run_pre_connection` hooks.
+
+==New MPM==
+
+A more robust approach might be to create a new MPM based on the existing async MPMs that uses an approach similar to the thread pool above, but at the MPM level. The downside to this approach is that the resulting module would only be pluggable in Apache 2.3.x. Prior to 2.3.x, MPMs are not pluggable.
