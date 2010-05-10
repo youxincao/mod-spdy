@@ -25,8 +25,8 @@ Create a directory to hold your source code.  It is important that the full dire
 
 = Compile the code =
   * Linux
-    # Run: `cd src/build; hammer -j4 --mode=Debug`.
-    # Build output will appear under `src/sconsbuild`.
+    # Run: `cd src; make`.
+    # Build output will appear under `src/out`.
 
   * Windows
     # Open src/build/All.vcproj in Visual Studio.
