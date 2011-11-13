@@ -29,6 +29,6 @@ Create a directory to hold your source code.  It is important that the full dire
     # Build output will appear under `src/out`.
 
   * Windows
-    # Open src/build/All.vcproj in Visual Studio.
+    # Open src/build/All.sln in Visual Studio.
     # Run "Build Solution" from the "Build" menu.
     # Build output will appear under src/build/Release or src/build/Debug depending on your configuration options.
