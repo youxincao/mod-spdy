@@ -25,8 +25,8 @@ Create a directory to hold your source code.  It is important that the full dire
 
 = Compile the code =
   * Linux
-    # Run: `cd src; make`.
-    # Build output will appear under `src/out`.
+    # Run: `cd src; make BUILDTYPE=Release`.
+    # Build output will appear under `src/out/Release`.
 
   * Windows
     # Open src/build/All.sln in Visual Studio.
