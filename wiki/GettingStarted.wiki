@@ -1,0 +1,46 @@
+#summary Getting started with mod_spdy.
+
+= Introduction =
+
+To install mod_spdy you will also need to install a version of mod_ssl with NPN support enabled.
+
+= Details =
+
+== 1. Build mod_ssl with NPN support ==
+
+{{{
+mkdir modssl
+cd modssl
+svn export http://mod-spdy.googlecode.com/svn/trunk/src/build_modssl_with_npn.sh
+./build_modssl_with_npn.sh 
+}}}
+
+Wait for the build to complete.
+
+== 2. Install mod_ssl ==
+
+Install mod_ssl.so in your Apache modules directory. This may be e.g. `/usr/lib/apache2/modules` if you are using Ubuntu, or some other location depending on your system.
+
+Instructions for Ubuntu:
+{{{
+sudo cp mod_ssl.so /usr/lib/apache2/modules
+sudo a2enmod ssl
+}}}
+
+== 3. Configure mod_ssl ==
+
+Instructions for generating a self-signed certificate on Ubuntu:
+{{{
+sudo apt-get install ssl-cert
+make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
+# Enter your hostname. Any hostname will do for testing.
+sudo mkdir /etc/apache2/ssl
+sudo mv /tmp/selfsigned.crt /etc/apache2/ssl
+# Edit /etc/apache2/sites-enabled/default-ssl.
+#   Find the line for SSLCertificateFile and update it to point
+#   at your new crt file. Comment out the line immediately following,
+#   for SSLCertificateKeyFile
+sudo a2ensite default-ssl
+}}}
+
+Alternatively, you may wish to follow [http://www.tc.umn.edu/~brams006/selfsign.html this tutorial].
