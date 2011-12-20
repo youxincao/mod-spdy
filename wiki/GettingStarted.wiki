@@ -61,7 +61,7 @@ On Ubuntu, from the `src` directory of the mod_spdy build:
 
 {{{
 sudo cp out/Release/libmod_spdy.so /usr/lib/apache2/modules/mod_spdy.so
-sudo echo "/usr/lib/apache2/modules/mod_spdy.so" > /etc/apache2/mods-available/spdy.load
+sudo echo "LoadModule spdy_module /usr/lib/apache2/modules/mod_spdy.so" > /etc/apache2/mods-available/spdy.load
 sudo echo "SpdyEnabled on" > /etc/apache2/mods-available/spdy.conf
 sudo a2enmod spdy
 }}}
