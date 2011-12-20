@@ -1,10 +1,6 @@
 #summary Getting started with mod_spdy.
 
-= Introduction =
-
-To install mod_spdy you will also need to install a version of mod_ssl with NPN support enabled.
-
-= Details =
+To install mod_spdy you will also need to install a version of mod_ssl with NPN support enabled. You'll also need to be familiar with building and installing software packages, and you'll need to have subversion, g++ toolchain, etc installed on your system.
 
 == 1. Build mod_ssl with NPN support ==
 
