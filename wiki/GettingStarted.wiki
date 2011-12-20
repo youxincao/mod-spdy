@@ -36,10 +36,9 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
 # Enter your hostname. Any hostname will do for testing.
 sudo mkdir /etc/apache2/ssl
 sudo mv /tmp/selfsigned.crt /etc/apache2/ssl
-# Edit /etc/apache2/sites-enabled/default-ssl.
-#   Find the line for SSLCertificateFile and update it to point
-#   at your new crt file. Comment out the line immediately following,
-#   for SSLCertificateKeyFile
+emacs /etc/apache2/sites-enabled/default-ssl.
+ # Find the line for SSLCertificateFile and update it to point at your new crt file.
+ # Comment out the line immediately following, for SSLCertificateKeyFile
 sudo a2ensite default-ssl
 }}}
 
