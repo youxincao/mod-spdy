@@ -53,7 +53,7 @@ Restart Apache. On Ubuntu:
 sudo /etc/init.d/apache2 restart
 }}}
 
-In any browser, navigate to https://yoursite/. If you are testing on localhost, try [https://127.0.0.1/].
+In any browser, navigate to e.g. https://yoursite/. If you are testing on localhost, try [https://127.0.0.1/].
 
 == 4. Build mod_spdy ==
 
