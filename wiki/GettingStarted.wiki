@@ -38,10 +38,32 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
 # Enter your hostname. Any hostname will do for testing.
 sudo mkdir /etc/apache2/ssl
 sudo mv /tmp/selfsigned.crt /etc/apache2/ssl
-emacs /etc/apache2/sites-enabled/default-ssl.
+emacs /etc/apache2/sites-enabled/default-ssl
  1. Find the line for SSLCertificateFile and update it to point at your new crt file.
  2. Comment out the line immediately following, for SSLCertificateKeyFile
 sudo a2ensite default-ssl
 }}}
 
 Alternatively, you may wish to follow [http://www.tc.umn.edu/~brams006/selfsign.html this tutorial].
+
+== 4. Build mod_spdy ==
+
+See HowToBuild.
+
+== 5. Install mod_spdy ==
+
+On Ubuntu, from the `src` directory of the mod_spdy build:
+
+{{{
+sudo cp out/Release/libmod_spdy.so /usr/lib/apache2/modules/mod_spdy.so
+sudo echo "/usr/lib/apache2/modules/mod_spdy.so" > /etc/apache2/mods-available/spdy.load
+sudo echo "SpdyEnabled on" > /etc/apache2/mods-available/spdy.conf
+sudo a2enmod spdy
+}}}
+
+== 6. Restart Apache ==
+
+On Ubuntu:
+{{{
+sudo /etc/init.d/apache2 restart
+}}}
