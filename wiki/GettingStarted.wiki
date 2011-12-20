@@ -39,8 +39,8 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
 sudo mkdir /etc/apache2/ssl
 sudo mv /tmp/selfsigned.crt /etc/apache2/ssl
 emacs /etc/apache2/sites-enabled/default-ssl.
- # Find the line for SSLCertificateFile and update it to point at your new crt file.
- # Comment out the line immediately following, for SSLCertificateKeyFile
+ 1. Find the line for SSLCertificateFile and update it to point at your new crt file.
+ 2. Comment out the line immediately following, for SSLCertificateKeyFile
 sudo a2ensite default-ssl
 }}}
 
