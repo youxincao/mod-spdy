@@ -27,7 +27,7 @@ sudo a2enmod ssl
 
 == 3. Configure mod_ssl ==
 
-Instructions for generating a self-signed certificate on Ubuntu:
+Instructions for generating a self-signed certificate on Ubuntu (fine for testing, not for production environments):
 {{{
 sudo apt-get install ssl-cert
 make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
