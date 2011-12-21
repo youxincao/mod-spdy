@@ -2,6 +2,10 @@
 
 =mod_spdy Design=
 
+NOTE: this document is out of date. In the meantime, see HowItWorks for a more up-to-date description of how multiplexing support is implemented in mod_spdy.
+
+----
+
 =Background=
 
 mod_spdy is an experimental implementation of the SPDY protocol that aims to provide SPDY support in the Apache HTTPD server.
