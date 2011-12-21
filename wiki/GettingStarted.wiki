@@ -8,7 +8,7 @@ Install subversion, curl, and a gcc/g++ toolchain.
 
 On Ubuntu:
 <code language="sh">
-sudo apt-get install subversion curl g++</code>
+sudo apt-get install subversion curl g++ apache2.2-bin patch binutils</code>
 
 == 1. Build mod_ssl with NPN support ==
 
