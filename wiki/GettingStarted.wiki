@@ -2,6 +2,13 @@
 
 To install mod_spdy you will also need to install a version of mod_ssl with NPN support enabled. You'll also need to be familiar with building and installing software packages, and you'll need to have subversion, g++ toolchain, etc installed on your system.
 
+== 0. Prerequesites ==
+
+Install subversion, curl, and a gcc/g++ toolchain.
+
+On Ubuntu:
+sudo apt-get install subversion curl g++
+
 == 1. Build mod_ssl with NPN support ==
 
 You may have a version of mod_ssl.so on your system already. You'll need to build a more recent version from Apache and OpenSSL source and apply a patch to each to enable NPN support. This is taken care of by the `build_modssl_with_npn.sh` script:
@@ -34,9 +41,9 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
 # Enter your hostname. Any hostname will do for testing.
 sudo mkdir /etc/apache2/ssl
 sudo mv /tmp/selfsigned.crt /etc/apache2/ssl
-emacs /etc/apache2/sites-available/default-ssl
- 1. Find the line for SSLCertificateFile and update it to point at your new crt file.
- 2. Comment out the line immediately following, for SSLCertificateKeyFile
+sudo emacs /etc/apache2/sites-available/default-ssl  # Any editor is fine here.
+# 1. Find the line for SSLCertificateFile and update it to point at your new crt file.
+# 2. Comment out the line immediately following, for SSLCertificateKeyFile
 sudo a2ensite default-ssl
 }}}
 
