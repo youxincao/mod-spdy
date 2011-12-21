@@ -1,0 +1,5 @@
+#summary Known compatibility issues, and workarounds.
+
+Since mod_spdy uses a thread pool to process multiplexed requests concurrently, it is not compatible with non-thread-safe Apache modules such as `mod_php`.
+
+If you use `mod_php` or another non-thread-safe generator, you can use it with mod_spdy by running it with [http://httpd.apache.org/mod_fcgid/ mod_fcgid]. We have successfully run an Apache server with SPDY, PHP and WordPress by using `mod_fcgid` instead of `mod_php`.
