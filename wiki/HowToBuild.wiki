@@ -3,7 +3,7 @@
 
 = Introduction =
 
-mod_spdy is built using the gyp build system.
+This document covers builting mod_spdy specifically. If you are looking for a guide to get mod_spdy and its dependencies built and installed for your Apache, please see *GettingStarted*.
 
 = Prerequisites =
 
