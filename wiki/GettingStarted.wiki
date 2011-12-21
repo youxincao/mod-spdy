@@ -7,20 +7,20 @@ To install mod_spdy you will also need to install a version of mod_ssl with NPN 
 Install subversion, curl, and a gcc/g++ toolchain.
 
 On Ubuntu:
-{{{
+<code language="sh">
 sudo apt-get install subversion curl g++
-}}}
+</code>
 
 == 1. Build mod_ssl with NPN support ==
 
 You may have a version of mod_ssl.so on your system already. You'll need to build a more recent version from Apache and OpenSSL source and apply a patch to each to enable NPN support. This is taken care of by the `build_modssl_with_npn.sh` script:
 
-{{{
+<code language="sh">
 mkdir modssl
 cd modssl
 svn export http://mod-spdy.googlecode.com/svn/trunk/src/build_modssl_with_npn.sh
 ./build_modssl_with_npn.sh 
-}}}
+</code>
 
 Wait for the build to complete.
 
@@ -29,15 +29,15 @@ Wait for the build to complete.
 Install mod_ssl.so in your Apache modules directory. This may be e.g. `/usr/lib/apache2/modules` if you are using Ubuntu, or some other location depending on your system.
 
 Instructions for Ubuntu:
-{{{
+<code language="sh">
 sudo cp mod_ssl.so /usr/lib/apache2/modules
 sudo a2enmod ssl
-}}}
+</code>
 
 == 3. Configure mod_ssl ==
 
 Instructions for generating a self-signed certificate on Ubuntu (fine for testing, not for production environments):
-{{{
+<code language="sh">
 sudo apt-get install ssl-cert
 make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /tmp/selfsigned.crt
 # Enter your hostname. Any hostname will do for testing.
@@ -47,16 +47,16 @@ sudo emacs /etc/apache2/sites-available/default-ssl  # Any editor is fine here.
 # 1. Find the line for SSLCertificateFile and update it to:  SSLCertificateFile /etc/apache2/ssl/selfsigned.crt
 # 2. Comment out the line immediately following, for SSLCertificateKeyFile
 sudo a2ensite default-ssl
-}}}
+</code>
 
 Alternatively, you may wish to follow [http://www.tc.umn.edu/~brams006/selfsign.html this tutorial].
 
 == 3.5. Verify mod_ssl is working ==
 
 Restart Apache. On Ubuntu:
-{{{
+<code language="sh">
 sudo /etc/init.d/apache2 restart
-}}}
+</code>
 
 In any browser, navigate to e.g. https://yoursite/. If you are testing on localhost, try [https://127.0.0.1/].
 
@@ -68,19 +68,19 @@ See HowToBuild.
 
 On Ubuntu, from the `src` directory of the mod_spdy build:
 
-{{{
+<code language="sh">
 sudo cp out/Release/libmod_spdy.so /usr/lib/apache2/modules/mod_spdy.so
 sudo echo "LoadModule spdy_module /usr/lib/apache2/modules/mod_spdy.so" > /etc/apache2/mods-available/spdy.load
 sudo echo "SpdyEnabled on" > /etc/apache2/mods-available/spdy.conf
 sudo a2enmod spdy
-}}}
+</code>
 
 == 6. Restart Apache ==
 
 On Ubuntu:
-{{{
+<code language="sh">
 sudo /etc/init.d/apache2 restart
-}}}
+</code>
 
 == 7. Verify in Google Chrome ==
 
