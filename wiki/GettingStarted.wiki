@@ -65,8 +65,8 @@ On Ubuntu, from the `src` directory of the mod_spdy build:
 
 <code language="sh">
 sudo cp out/Release/libmod_spdy.so /usr/lib/apache2/modules/mod_spdy.so
-sudo echo "LoadModule spdy_module /usr/lib/apache2/modules/mod_spdy.so" > /etc/apache2/mods-available/spdy.load
-sudo echo "SpdyEnabled on" > /etc/apache2/mods-available/spdy.conf
+echo "LoadModule spdy_module /usr/lib/apache2/modules/mod_spdy.so" | sudo tee /etc/apache2/mods-available/spdy.load
+echo "SpdyEnabled on" | sudo tee /etc/apache2/mods-available/spdy.conf
 sudo a2enmod spdy</code>
 
 == 6. Restart Apache ==
@@ -77,6 +77,6 @@ sudo /etc/init.d/apache2 restart</code>
 
 == 7. Verify in Google Chrome ==
 
-Point your Google Chrome browser at your web site. Be sure to use an https URL. Open another tab and navigate to `chrome://net-internals`, click the SPDY tab, and verify that your hostname appears in the table.
+Point your Google Chrome browser at your web site. Be sure to use an `https` URL. Open another tab and navigate to <a href="chrome://net-internals/#spdy">`chrome://net-internals/#spdy`</a>, and verify that your hostname appears in the table.
 
 *NOTE:* The SPDY protocol is designed to fall back to SSL without SPDY if things are not working correctly, so it's important that you confirm that your hostname appears in the table in the SPDY tab. If it doesn't SPDY is not working. You can also check your apache `error.log` to see if mod_spdy was able to talk SPDY with Google Chrome.
