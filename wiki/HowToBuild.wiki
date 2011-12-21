@@ -21,7 +21,7 @@ Create a directory to hold your source code.  It is important that the full dire
   * `mkdir mod_spdy`
   * `cd mod_spdy`
   * `gclient config http://mod-spdy.googlecode.com/svn/trunk/src`
-  * `gclient update --force`
+  * `gclient sync --force`
 
 = Compile the code =
   * Linux
