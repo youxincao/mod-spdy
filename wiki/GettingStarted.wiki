@@ -7,7 +7,9 @@ To install mod_spdy you will also need to install a version of mod_ssl with NPN 
 Install subversion, curl, and a gcc/g++ toolchain.
 
 On Ubuntu:
+{{{
 sudo apt-get install subversion curl g++
+}}}
 
 == 1. Build mod_ssl with NPN support ==
 
