@@ -15,7 +15,7 @@ sudo apt-get install subversion curl g++ apache2 patch binutils make</code>
 
 == 1. Build mod_ssl with NPN support ==
 
-You may have a version of mod_ssl.so on your system already. You'll need to build a more recent version from Apache and OpenSSL source and apply a patch to each to enable NPN support. This is taken care of by the `build_modssl_with_npn.sh` script:
+You may have a version of mod_ssl.so on your system already. You'll need to build a more recent version from Apache and OpenSSL source and apply a patch to each to enable [http://technotes.googlecode.com/git/nextprotoneg.html NPN] support. This is taken care of by the `build_modssl_with_npn.sh` script:
 
 <code language="sh">
 mkdir modssl
