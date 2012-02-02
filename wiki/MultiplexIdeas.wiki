@@ -2,7 +2,7 @@
 
 =Multiplexing SPDY in Apache=
 
-*NOTE: this document is out of date. In the meantime, see HowItWorks for a more up-to-date description of how multiplexing support is implemented in mod_spdy.*
+*NOTE: this document is out of date. mod_spdy currently supports multiplexing using a variation of the proposal described in this document. In the meantime, see HowItWorks for a more up-to-date description of how multiplexing support is implemented in mod_spdy.*
 
 ---- 
 
