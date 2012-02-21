@@ -1,7 +1,7 @@
 #summary How to configure mod_spdy once it is installed
 #labels Featured
 
-All of `mod_spdy`'s configuration options begin with the prefix "`Spdy`", and can be used either at the top level or within a `VirtualHost` context.
+All of `mod_spdy`'s configuration options begin with the prefix "`Spdy`", and most of them can be used either at the top level or within a `<VirtualHost>` context.
 
 = Turning the module on and off =
 
@@ -43,7 +43,7 @@ SpdyMaxThreadsPerProcess n
 where `n` is the number of threads to use on each child process.  Note that if
 you are using a threaded MPM, this thread pool will be _shared_ by all
 connections on each process.  At the moment, the default value is 5 (rather
-conservative), but this will likely change as we do more performance testing.
+conservative), but this will likely change as we do more performance testing.  This directive is valid only at the top level (not within a `<VirtualHost>` directive).
 
 === Changing the limit on simultaneous streams ===
 
@@ -74,7 +74,7 @@ SpdyDebugLoggingVerbosity n
 where `n` is a non-negative integer.  Zero is the default, and does not enable
 any new logging; 5 will enable many additional log messages.  Note that this
 directive will have no effect unless Apache's `LogLevel` is set to `notice`,
-`info`, or `debug`.
+`info`, or `debug`.  This directive is valid only at the top level (not within a `<VirtualHost>` directive).
 
 === Debugging SPDY without SSL ===
 
