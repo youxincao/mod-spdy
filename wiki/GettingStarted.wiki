@@ -13,20 +13,30 @@ On Ubuntu:
 <code language="sh">
 sudo apt-get install subversion curl g++ apache2 patch binutils make</code>
 
-== 1. Build mod_ssl with NPN support ==
+You will also need to install the Chromium [http://dev.chromium.org/developers/how-tos/install-depot-tools depot tools] and add them to your path.
+
+== 1. Get the code ==
+
+Create a directory to hold your source code.  It is important that the full directory path contains no spaces.
+
+<code language="sh">
+mkdir mod_spdy
+cd mod_spdy
+gclient config http://mod-spdy.googlecode.com/svn/trunk/src
+gclient sync --force
+cd src</code>
+
+== 2. Build mod_ssl with NPN support ==
 
 You may have a version of mod_ssl.so on your system already. You'll need to build a more recent version from Apache and OpenSSL source and apply a patch to each to enable [http://technotes.googlecode.com/git/nextprotoneg.html NPN] support. This is taken care of by the `build_modssl_with_npn.sh` script:
 
+From the `mod_spdy` directory:
 <code language="sh">
-mkdir modssl
-cd modssl
-svn export http://mod-spdy.googlecode.com/svn/trunk/src/build_modssl_with_npn.sh
-
 ./build_modssl_with_npn.sh</code>
 
 Wait for the build to complete.
 
-== 2. Install mod_ssl ==
+== 3. Install mod_ssl ==
 
 Install mod_ssl.so in your Apache modules directory. This may be e.g. `/usr/lib/apache2/modules` if you are using Ubuntu, or some other location depending on your system.
 
@@ -35,7 +45,7 @@ Instructions for Ubuntu:
 sudo cp mod_ssl.so /usr/lib/apache2/modules
 sudo a2enmod ssl</code>
 
-== 3. Configure mod_ssl ==
+== 4. Configure mod_ssl ==
 
 Instructions for generating a self-signed certificate on Ubuntu (fine for testing, not for production environments):
 <code language="sh">
@@ -51,7 +61,7 @@ sudo a2ensite default-ssl</code>
 
 Alternatively, you may wish to follow [http://www.tc.umn.edu/~brams006/selfsign.html this tutorial].
 
-== 3.5. Verify mod_ssl is working ==
+== 4.5. Verify mod_ssl is working ==
 
 Restart Apache. On Ubuntu:
 <code language="sh">
@@ -59,11 +69,12 @@ sudo /etc/init.d/apache2 restart</code>
 
 In any browser, navigate to e.g. https://yoursite/. If you are testing on localhost, try [https://127.0.0.1/].
 
-== 4. Build mod_spdy ==
+== 5. Build mod_spdy ==
+From the `src` directory:
+<code language="sh">
+make BUILDTYPE=Release</code>
 
-See HowToBuild.
-
-== 5. Install mod_spdy ==
+== 6. Install mod_spdy ==
 
 On Ubuntu, from the `src` directory of the mod_spdy build:
 
@@ -73,13 +84,13 @@ echo "LoadModule spdy_module /usr/lib/apache2/modules/mod_spdy.so" | sudo tee /e
 echo "SpdyEnabled on" | sudo tee /etc/apache2/mods-available/spdy.conf
 sudo a2enmod spdy</code>
 
-== 6. Restart Apache ==
+== 7. Restart Apache ==
 
 On Ubuntu:
 <code language="sh">
 sudo /etc/init.d/apache2 restart</code>
 
-== 7. Verify in Google Chrome ==
+== 8. Verify in Google Chrome ==
 
 Point your Google Chrome browser at your web site. Be sure to use an `https` URL. Open another tab and navigate to <a href="chrome://net-internals/#spdy">`chrome://net-internals/#spdy`</a>, and verify that your hostname appears in the table.
 
