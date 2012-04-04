@@ -1,4 +1,5 @@
 #summary Design Document for mod_spdy Apache module.
+#labels Deprecated
 
 =mod_spdy Design=
 
