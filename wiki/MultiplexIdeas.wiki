@@ -1,4 +1,5 @@
 #summary Ideas to enable SPDY multiplexing in Apache.
+#labels Deprecated
 
 =Multiplexing SPDY in Apache=
 
