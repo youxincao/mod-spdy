@@ -1,5 +1,5 @@
 #summary Explains how to build mod_spdy.
-#labels Featured
+#labels Deprecated
 
 = Introduction =
 
