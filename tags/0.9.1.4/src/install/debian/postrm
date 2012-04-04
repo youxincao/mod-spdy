@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Copyright (c) 2009 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+action="$1"
+
+# Undo the changes to ssl.load we made in the preinst script.
+if [ -f "@@APACHE_CONFDIR@@/ssl.load" ]; then
+  # Don't do anything if we don't see the magic "MOD_SPDY" marker.  If it's not
+  # there, maybe the user already manually reverted ssl.load.
+  if grep -q 'MOD_SPDY' @@APACHE_CONFDIR@@/ssl.load; then
+    # First, we uncomment any line that starts with "#ORIG# " (we use that
+    # particular prefix, to reduce the chances that we break the file if the
+    # user has added their own comments to the file for some reason), up until
+    # we see the "MOD_SPDY" marker.  Second, we delete the line containing the
+    # "MOD_SPDY" marker and all lines thereafter, thus removing the stuff we
+    # appended to the file in the preinst script.
+    sed --in-place \
+      -e '1,/MOD_SPDY/ s/^#ORIG# \(.*\)$/\1/' \
+      -e '/MOD_SPDY/,$ d' \
+      @@APACHE_CONFDIR@@/ssl.load
+  fi
+fi
+
+# Only do complete clean-up on purge.
+if [ "$action" != "purge" ] ; then
+  exit 0
+fi
+
+@@include@@../common/apt.include
+
+# Only remove the defaults file if it is not empty. An empty file was probably
+# put there by the sysadmin to disable automatic repository configuration, as
+# per the instructions on the package download page.
+if [ -s "$DEFAULTS_FILE" ]; then
+  # Make sure the package defaults are removed before the repository config,
+  # otherwise it could result in the repository config being removed, but the
+  # package defaults remain and are set to not recreate the repository config.
+  # In that case, future installs won't recreate it and won't get auto-updated.
+  rm "$DEFAULTS_FILE" || exit 1
+fi
+# Remove any Google repository added by the package.
+clean_sources_lists
