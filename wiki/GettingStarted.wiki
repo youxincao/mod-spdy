@@ -61,7 +61,7 @@ sudo a2ensite default-ssl</code>
 
 Alternatively, you may wish to follow [http://www.tc.umn.edu/~brams006/selfsign.html this tutorial].
 
-== 4.5. Verify mod_ssl is working ==
+== 5. Verify mod_ssl is working ==
 
 Restart Apache. On Ubuntu:
 <code language="sh">
@@ -69,12 +69,39 @@ sudo /etc/init.d/apache2 restart</code>
 
 In any browser, navigate to e.g. https://yoursite/. If you are testing on localhost, try [https://127.0.0.1/].
 
-== 5. Build mod_spdy ==
-From the `src` directory:
+== 6. Build and install mod_spdy ==
+
+There are two ways to build and install mod_spdy.  First, you can build a Debian or RPM package, and install it via your system's package manager.  Alternatively, you can simply build the mod_spdy binary and install it by hand.
+
+=== Using the Debian package manager ===
+
+If you already have mod_spdy installed via your package manager, first remove the current version:
+<code language="sh">
+dpkg -r mod-spdy-beta</code>
+
+From the mod_spdy `src` directory, build and install the package:
+<code language="sh">
+rm -f out/Release/mod-spdy-beta*.deb
+BUILDTYPE=Release make linux_package_deb
+dpkg -i out/Release/mod-spdy-beta*.deb</code>
+
+=== Using the RPM package manager ===
+
+If you already have mod_spdy installed via your package manager, first remove the current version:
+<code language="sh">
+rpm -e mod-spdy-beta</code>
+
+From the mod_spdy `src` directory, build and install the package:
+<code language="sh">
+rm -f out/Release/mod-spdy-beta*.rpm
+BUILDTYPE=Release make linux_package_rpm
+rpm -i out/Release/mod-spdy-beta*.rpm</code>
+
+=== Without using a package manager ===
+
+From the mod_spdy `src` directory, build the binary:
 <code language="sh">
 make BUILDTYPE=Release</code>
-
-== 6. Install mod_spdy ==
 
 On Ubuntu, from the `src` directory of the mod_spdy build:
 
