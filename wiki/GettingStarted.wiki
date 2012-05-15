@@ -1,6 +1,8 @@
 #summary Getting started with mod_spdy.
 #labels Featured
 
+*The easiest way to install mod_spdy is to download and install one of the binary packages from [https://developers.google.com/speed/spdy/mod_spdy/].  If instead you'd like to compile from source, please see the instructions below.*
+
 To install mod_spdy you will also need to install a version of mod_ssl with [http://technotes.googlecode.com/git/nextprotoneg.html NPN] support enabled. You'll also need to be familiar with building and installing software packages, and you'll need to have subversion, g++ toolchain, etc installed on your system.
 
 Before starting, please consult our known [KnownIssues compatibility issues].
@@ -22,7 +24,7 @@ Create a directory to hold your source code.  It is important that the full dire
 <code language="sh">
 mkdir mod_spdy
 cd mod_spdy
-gclient config "http://mod-spdy.googlecode.com/svn/trunk/src"
+gclient config "http://mod-spdy.googlecode.com/svn/tags/current/src"
 gclient sync --force
 cd src</code>
 
