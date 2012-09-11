@@ -13,7 +13,7 @@ Install subversion, curl, and a gcc/g++ toolchain.
 
 On Ubuntu:
 <code language="sh">
-sudo apt-get install subversion curl g++ apache2 patch binutils make</code>
+sudo apt-get install subversion curl g++ apache2 patch binutils make devscripts</code>
 
 You will also need to install the Chromium [http://dev.chromium.org/developers/how-tos/install-depot-tools depot tools] and add them to your path.
 
