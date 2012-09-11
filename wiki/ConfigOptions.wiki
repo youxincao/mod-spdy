@@ -58,6 +58,25 @@ where `n` is the maximum number of SPDY streams (i.e. requests) that can be
 active at any given time on a single connection.  It is recommended to keep
 this limit reasonably high; the current default value is 100.
 
+=== Changing Sever Push Limits ===
+
+The SPDY protocol supports server initiated content push. By default, only 
+the initial client-initiated request can push content; pushed content can
+not result in further pushed content. This could potentially result in unwanted
+extra content in the best case and infinite recursion in the worst. To control
+this, mod_spdy implements a maximum push depth:
+{{{
+SpdyMaxServerPushDepth n
+}}}
+where `n` is the maximum distance from the initial client request that a push
+can be initiated. A push depth of 1, the default, allows only the initially
+requested content to push more content. A push depth of 2 will allow that 
+pushed content to result in more pushes. Setting this value to 0 effectively
+turns off server push. Note that recursive server push is currently allowed
+and should be watched for if you set this value to a high number: a.html 
+could push b.html which can in turn push a.html again which would push b.html,
+etc.
+
 = Debugging =
 
 `mod_spdy` has several config options useful for debugging the module, which
