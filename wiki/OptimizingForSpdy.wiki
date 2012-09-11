@@ -121,8 +121,9 @@ priorities, so 0 is the highest priority, and 7 is the lowest priority.
 
 Multiple X-Associated-Content headers in one response are permitted; `mod_spdy`
 will (try to) push all resources specified in each one.  However, to help avoid
-infinite push loops, `mod_spdy` currently does not allow resources to be pushed
-from a resource that was itself pushed.  Also, some pushes can fail for any of
+infinite push loops, `mod_spdy` currently only pushes content up to a predefined
+depth. See [ConfigOptions#Changing_Sever_Push_Limits Changing Server Push Limits] 
+for more information. Also, some pushes can fail for any of
 various reasons, such as if the SPDY client has told the server to push no more
 than a small number of resources at once.  In any of these cases where the
 server cannot push any resources, the X-Associated-Content header will be removed
