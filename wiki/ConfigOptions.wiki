@@ -60,11 +60,11 @@ this limit reasonably high; the current default value is 100.
 
 === Changing Sever Push Limits ===
 
-The SPDY protocol supports server initiated content push. By default, only 
+The SPDY protocol supports server-initiated content push. By default in `mod_spdy`, only 
 the initial client-initiated request can push content; pushed content can
-not result in further pushed content. This could potentially result in unwanted
-extra content in the best case and infinite recursion in the worst. To control
-this, mod_spdy implements a maximum push depth:
+not result in further pushed content, because this could potentially result in unwanted
+extra content in the best case and infinite recursion in the worst. However, you can adjust
+this restriction with the directive:
 {{{
 SpdyMaxServerPushDepth n
 }}}
@@ -92,18 +92,19 @@ SpdyDebugLoggingVerbosity n
 }}}
 where `n` is a non-negative integer.  Zero is the default, and does not enable
 any new logging; 5 will enable many additional log messages.  Note that this
-directive will have no effect unless Apache's `LogLevel` is set to `notice`,
-`info`, or `debug`.  This directive is valid only at the top level (not within a `<VirtualHost>` directive).
+directive will have no effect unless Apache's `LogLevel` is set to `debug`.
+This directive is valid only at the top level (not within a `<VirtualHost>` directive).
 
 === Debugging SPDY without SSL ===
 
 Normally SPDY is only ever used for SSL connections (`https` URLs).  To tell
 `mod_spdy` to use SPDY even for non-SSL connections (`http` URLs), use:
 {{{
-SpdyDebugUseSpdyForNonSslConnections on
+SpdyDebugUseSpdyForNonSslConnections n
 }}}
+where `n` is the SPDY version to use (either `2` or `3`).
 *Note that this will break `http` URLs for browsers,* so _never_ use it in
 production.  It can be useful, for example, if you want to debug the SPDY
 connection with a tool such as Wireshark without having to deal with
 encryption.  Running Chrome with the `--use-spdy=no-ssl` flag will allow Chrome
-to talk to `mod_spdy` in this mode.  This option is off by default.
+to talk to `mod_spdy` in this mode.  This option is off by default; you can explicitly disable it with `SpdyDebugUseSpdyForNonSslConnections off`.
